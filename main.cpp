@@ -3,6 +3,7 @@
 #pragma ide diagnostic ignored "performance-unnecessary-value-param"
 
 #include <iostream>
+#include <sstream>
 
 class Date {
 public:
@@ -74,6 +75,13 @@ public:
         this->_salary = salary;
     }
 
+    Employee() {
+        this->_name = "John Doe";
+        this->_hire_date = Date(1, 1, 2020);
+        this->_role = "Software Engineer";
+        this->_salary = 1000;
+    }
+
     ~Employee() = default;
 
     void set_name(std::string name) {
@@ -116,9 +124,20 @@ public:
         return out;
     }
 
-    friend std::istream& operator>>(std::istream& in, Employee& employee) {
-        in >> employee._name >> employee._hire_date >> employee._role >> employee._salary;
-        return in;
+    virtual void input() {
+        std::string line;
+        std::getline(std::cin, line);
+        std::istringstream iss(line);
+        std::getline(iss, this->_name);
+        std::getline(std::cin, line);
+        iss = std::istringstream(line);
+        iss >> this->_hire_date;
+        std::getline(std::cin, line);
+        iss = std::istringstream(line);
+        std::getline(iss, this->_role);
+        std::getline(std::cin, line);
+        iss = std::istringstream(line);
+        iss >> this->_salary;
     }
 };
 
@@ -135,6 +154,10 @@ public:
         int items_sold
     ) : Employee(name, hire_date, role, salary) {
         this->_items_sold = items_sold;
+    }
+
+    PartTimeEmployee() {
+        this->_items_sold = 0;
     }
 
     ~PartTimeEmployee() = default;
@@ -166,21 +189,9 @@ public:
         return out;
     }
 
-    friend std::istream& operator>>(std::istream& in, PartTimeEmployee& employee) {
-        std::string name;
-        Date birth_date;
-        Date hire_date;
-        std::string role;
-        int salary;
-        int items_sold;
-        in >> name >> birth_date >> hire_date >> role >> salary >> items_sold;
-
-        employee.set_name(name);
-        employee.set_hire_date(hire_date);
-        employee.set_role(role);
-        employee.set_salary(salary);
-        employee.set_items_sold(items_sold);
-        return in;
+    void input() override {
+        Employee::input();
+        std::cin >> this->_items_sold;
     }
 };
 
@@ -201,6 +212,11 @@ public:
     ) : Employee(name, hire_date, role, salary) {
         this->_full_time_role = full_time_role;
         this->_salary_date = salary_date;
+    }
+
+    FullTimeEmployee() {
+        this->_full_time_role = "Employer";
+        this->_salary_date = Date(1, 1, 2021);
     }
 
     ~FullTimeEmployee() = default;
@@ -249,54 +265,38 @@ public:
         return out;
     }
 
-    friend std::istream& operator>>(std::istream& in, FullTimeEmployee& employee) {
-        std::string name;
-        Date birth_date;
-        Date hire_date;
-        std::string role;
-        int salary;
-        std::string full_time_role;
-        in >> name >> birth_date >> hire_date >> role >> salary >> full_time_role;
-
-        employee.set_name(name);
-        employee.set_hire_date(hire_date);
-        employee.set_role(role);
-        employee.set_salary(salary);
-        employee.set_full_time_role(full_time_role);
-        return in;
+    void input() override {
+        Employee::input();
+        std::string line;
+        std::getline(std::cin, line);
+        std::istringstream iss(line);
+        std::getline(iss, this->_full_time_role);
+        std::getline(std::cin, line);
+        iss = std::istringstream(line);
+        iss >> this->_salary_date;
     }
+
 };
 
 
 int main() {
-    // employee test
-    Employee employee(
-        "John Doe",
-        Date(1, 1, 2020),
-        "Software Engineer", 1000
-    );
-    std::cout << employee << std::endl;
+    std::string employee_type;
+    std::cin >> employee_type;
+    std::cin.ignore();
 
-    // part-time employee test
-    PartTimeEmployee part_time_employee(
-        "Jane Doe",
-        Date(1, 1, 2020),
-        "Software Engineer",
-        1000,
-        15
-    );
-    std::cout << part_time_employee << std::endl;
-
-    // full-time employee test
-    FullTimeEmployee full_time_employee(
-        "Alice Doe",
-        Date(5, 12, 2010),
-        "Software Engineer",
-        1000,
-        "Director",
-        Date(4, 12, 2020)
-    );
-    std::cout << full_time_employee << std::endl;
+    if (employee_type == "PartTimeEmployee") {
+        PartTimeEmployee employee;
+        employee.input();
+        std::cout << employee << std::endl;
+    } else if (employee_type == "FullTimeEmployee") {
+        FullTimeEmployee employee;
+        employee.input();
+        std::cout << employee << std::endl;
+    } else {
+        Employee employee;
+        employee.input();
+        std::cout << employee << std::endl;
+    }
 }
 
 #pragma clang diagnostic pop
