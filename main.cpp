@@ -120,7 +120,7 @@ public:
         out << "Name: " << employee._name << "\n";
         out << "Hire date: " << employee._hire_date << "\n";
         out << "Role: " << employee._role << "\n";
-        out << "Salary: " << employee._salary << "k\n";
+        out << "Salary: " << employee._salary;
         return out;
     }
 
@@ -185,7 +185,7 @@ public:
         out << "Hire date: " << employee.get_hire_date() << "\n";
         out << "Role: " << employee.get_role() << "\n";
         out << "Salary: " << employee.get_salary() << "k\n";
-        out << "Items sold: " << employee.get_items_sold() << "\n";
+        out << "Items sold: " << employee.get_items_sold();
         return out;
     }
 
@@ -261,7 +261,7 @@ public:
         out << "Salary: " << employee.get_salary() << "k\n";
         out << "Full time role: " << employee.get_full_time_role() << "\n";
         out << "Bonus: " << employee._bonus << "\n";
-        out << "Salary date: " << employee.get_salary_date() << "\n";
+        out << "Salary date: " << employee.get_salary_date();
         return out;
     }
 
@@ -287,15 +287,15 @@ int main() {
     if (employee_type == "PartTimeEmployee") {
         PartTimeEmployee employee;
         employee.input();
-        std::cout << employee;
+        std::cout << employee << std::endl;
     } else if (employee_type == "FullTimeEmployee") {
         FullTimeEmployee employee;
         employee.input();
-        std::cout << employee;
+        std::cout << employee << std::endl;
     } else {
         Employee employee;
         employee.input();
-        std::cout << employee;
+        std::cout << employee << std::endl;
     }
 }
 
