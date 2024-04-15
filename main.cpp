@@ -287,15 +287,15 @@ int main() {
     if (employee_type == "PartTimeEmployee") {
         PartTimeEmployee employee;
         employee.input();
-        std::cout << employee << std::endl;
+        std::cout << employee;
     } else if (employee_type == "FullTimeEmployee") {
         FullTimeEmployee employee;
         employee.input();
-        std::cout << employee << std::endl;
+        std::cout << employee;
     } else {
         Employee employee;
         employee.input();
-        std::cout << employee << std::endl;
+        std::cout << employee;
     }
 }
 
