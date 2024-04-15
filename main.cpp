@@ -54,6 +54,7 @@ public:
         float delta_months = float(12 - date.month) + float(this->month);
         delta_months *= 365.25 / 12; // average number of days in a month
         float delta_days = float(this->day) - float(date.day);
+        std::cout << int(delta_years + delta_months + delta_days) << std::endl;
         return int(delta_years + delta_months + delta_days);
     }
 };
@@ -126,7 +127,13 @@ private:
     int _items_sold;
 
 public:
-    PartTimeEmployee(std::string name, Date hire_date, std::string role, int salary, int items_sold) : Employee(name, hire_date, role, salary) {
+    PartTimeEmployee(
+        std::string name,
+        Date hire_date,
+        std::string role,
+        int salary,
+        int items_sold
+    ) : Employee(name, hire_date, role, salary) {
         this->_items_sold = items_sold;
     }
 
@@ -155,7 +162,7 @@ public:
         out << "Hire date: " << employee.get_hire_date() << "\n";
         out << "Role: " << employee.get_role() << "\n";
         out << "Salary: " << employee.get_salary() << "k\n";
-        out << "Items sold: " << employee._items_sold << "\n";
+        out << "Items sold: " << employee.get_items_sold() << "\n";
         return out;
     }
 
@@ -180,11 +187,20 @@ public:
 class FullTimeEmployee : public Employee {
 private:
     std::string _full_time_role;
+    Date _salary_date;
     int _bonus = 0;
 
 public:
-    FullTimeEmployee(std::string name, Date hire_date, std::string role, int salary, std::string full_time_role) : Employee(name, hire_date, role, salary) {
+    FullTimeEmployee(
+        std::string name,
+        Date hire_date,
+        std::string role,
+        int salary,
+        std::string full_time_role,
+        Date salary_date
+    ) : Employee(name, hire_date, role, salary) {
         this->_full_time_role = full_time_role;
+        this->_salary_date = salary_date;
     }
 
     ~FullTimeEmployee() = default;
@@ -197,11 +213,20 @@ public:
         return this->_full_time_role;
     }
 
-    int get_bonus() const {
+    int get_bonus() {
+        if (this->_salary_date.year - this->get_hire_date().year >= 10) {
+            this->_bonus = 1000;
+        } else if (this->_salary_date.year - this->get_hire_date().year >= 1) {
+            this->_bonus = 100;
+        }
         return this->_bonus;
     }
 
-    int get_salary() const override {
+    Date get_salary_date() const {
+        return this->_salary_date;
+    }
+
+    int get_salary() {
         float multiplier = 1;
         if (this->_full_time_role == "Employer") {
             multiplier = 1.2;
@@ -210,16 +235,17 @@ public:
         } else if (this->_full_time_role == "Director") {
             multiplier = 2;
         }
-        return int(float(Employee::get_salary()) * multiplier) + this->_bonus;
+        return int(float(Employee::get_salary()) * multiplier) + this->get_bonus();
     }
 
-    friend std::ostream& operator<<(std::ostream& out, const FullTimeEmployee& employee) {
+    friend std::ostream& operator<<(std::ostream& out, FullTimeEmployee employee) {
         out << "Name: " << employee.get_name() << "\n";
         out << "Hire date: " << employee.get_hire_date() << "\n";
         out << "Role: " << employee.get_role() << "\n";
         out << "Salary: " << employee.get_salary() << "k\n";
-        out << "Full time role: " << employee._full_time_role << "\n";
+        out << "Full time role: " << employee.get_full_time_role() << "\n";
         out << "Bonus: " << employee._bonus << "\n";
+        out << "Salary date: " << employee.get_salary_date() << "\n";
         return out;
     }
 
@@ -242,18 +268,34 @@ public:
 };
 
 
-
 int main() {
     // employee test
-    Employee employee("John Doe", Date(1, 1, 2020), "Software Engineer", 1000);
+    Employee employee(
+        "John Doe",
+        Date(1, 1, 2020),
+        "Software Engineer", 1000
+    );
     std::cout << employee << std::endl;
 
     // part-time employee test
-    PartTimeEmployee part_time_employee("Jane Doe", Date(1, 1, 2020), "Software Engineer", 1000, 15);
+    PartTimeEmployee part_time_employee(
+        "Jane Doe",
+        Date(1, 1, 2020),
+        "Software Engineer",
+        1000,
+        15
+    );
     std::cout << part_time_employee << std::endl;
 
     // full-time employee test
-    FullTimeEmployee full_time_employee("Alice Doe", Date(1, 1, 2020), "Software Engineer", 1000, "Employer");
+    FullTimeEmployee full_time_employee(
+        "Alice Doe",
+        Date(5, 12, 2010),
+        "Software Engineer",
+        1000,
+        "Director",
+        Date(4, 12, 2020)
+    );
     std::cout << full_time_employee << std::endl;
 }
 
