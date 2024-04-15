@@ -1,3 +1,7 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-nodiscard"
+#pragma ide diagnostic ignored "performance-unnecessary-value-param"
+
 #include <iostream>
 
 class Date {
@@ -57,15 +61,13 @@ public:
 class Employee {
 private:
     std::string _name;
-    Date _birth_date;
     Date _hire_date;
     std::string _role;
     int _salary;
 
 public:
-    Employee(std::string name, Date birth_date, Date hire_date, std::string role, int salary) {
+    Employee(std::string name, Date hire_date, std::string role, int salary) {
         this->_name = name;
-        this->_birth_date = birth_date;
         this->_hire_date = hire_date;
         this->_role = role;
         this->_salary = salary;
@@ -79,14 +81,6 @@ public:
 
     std::string get_name() const {
         return this->_name;
-    }
-
-    void set_birth_date(Date birth_date) {
-        this->_birth_date = birth_date;
-    }
-
-    Date get_birth_date() const {
-        return this->_birth_date;
     }
 
     void set_hire_date(Date hire_date) {
@@ -115,7 +109,6 @@ public:
 
     friend std::ostream& operator<<(std::ostream& out, const Employee& employee) {
         out << "Name: " << employee._name << "\n";
-        out << "Birth date: " << employee._birth_date << "\n";
         out << "Hire date: " << employee._hire_date << "\n";
         out << "Role: " << employee._role << "\n";
         out << "Salary: " << employee._salary << "k\n";
@@ -123,7 +116,7 @@ public:
     }
 
     friend std::istream& operator>>(std::istream& in, Employee& employee) {
-        in >> employee._name >> employee._birth_date >> employee._hire_date >> employee._role >> employee._salary;
+        in >> employee._name >> employee._hire_date >> employee._role >> employee._salary;
         return in;
     }
 };
@@ -133,7 +126,7 @@ private:
     int _items_sold;
 
 public:
-    PartTimeEmployee(std::string name, Date birth_date, Date hire_date, std::string role, int salary, int items_sold) : Employee(name, birth_date, hire_date, role, salary) {
+    PartTimeEmployee(std::string name, Date hire_date, std::string role, int salary, int items_sold) : Employee(name, hire_date, role, salary) {
         this->_items_sold = items_sold;
     }
 
@@ -159,7 +152,6 @@ public:
 
     friend std::ostream& operator<<(std::ostream& out, const PartTimeEmployee& employee) {
         out << "Name: " << employee.get_name() << "\n";
-        out << "Birth date: " << employee.get_birth_date() << "\n";
         out << "Hire date: " << employee.get_hire_date() << "\n";
         out << "Role: " << employee.get_role() << "\n";
         out << "Salary: " << employee.get_salary() << "k\n";
@@ -177,7 +169,6 @@ public:
         in >> name >> birth_date >> hire_date >> role >> salary >> items_sold;
 
         employee.set_name(name);
-        employee.set_birth_date(birth_date);
         employee.set_hire_date(hire_date);
         employee.set_role(role);
         employee.set_salary(salary);
@@ -192,7 +183,7 @@ private:
     int _bonus = 0;
 
 public:
-    FullTimeEmployee(std::string name, Date birth_date, Date hire_date, std::string role, int salary, std::string full_time_role) : Employee(name, birth_date, hire_date, role, salary) {
+    FullTimeEmployee(std::string name, Date hire_date, std::string role, int salary, std::string full_time_role) : Employee(name, hire_date, role, salary) {
         this->_full_time_role = full_time_role;
     }
 
@@ -224,7 +215,6 @@ public:
 
     friend std::ostream& operator<<(std::ostream& out, const FullTimeEmployee& employee) {
         out << "Name: " << employee.get_name() << "\n";
-        out << "Birth date: " << employee.get_birth_date() << "\n";
         out << "Hire date: " << employee.get_hire_date() << "\n";
         out << "Role: " << employee.get_role() << "\n";
         out << "Salary: " << employee.get_salary() << "k\n";
@@ -243,7 +233,6 @@ public:
         in >> name >> birth_date >> hire_date >> role >> salary >> full_time_role;
 
         employee.set_name(name);
-        employee.set_birth_date(birth_date);
         employee.set_hire_date(hire_date);
         employee.set_role(role);
         employee.set_salary(salary);
@@ -256,14 +245,16 @@ public:
 
 int main() {
     // employee test
-    Employee employee("John Doe", Date(1, 1, 2000), Date(1, 1, 2020), "Software Engineer", 1000);
+    Employee employee("John Doe", Date(1, 1, 2020), "Software Engineer", 1000);
     std::cout << employee << std::endl;
 
     // part-time employee test
-    PartTimeEmployee part_time_employee("Jane Doe", Date(1, 1, 2000), Date(1, 1, 2020), "Software Engineer", 1000, 15);
+    PartTimeEmployee part_time_employee("Jane Doe", Date(1, 1, 2020), "Software Engineer", 1000, 15);
     std::cout << part_time_employee << std::endl;
 
     // full-time employee test
-    FullTimeEmployee full_time_employee("Alice Doe", Date(1, 1, 2000), Date(1, 1, 2020), "Software Engineer", 1000, "Employer");
+    FullTimeEmployee full_time_employee("Alice Doe", Date(1, 1, 2020), "Software Engineer", 1000, "Employer");
     std::cout << full_time_employee << std::endl;
 }
+
+#pragma clang diagnostic pop
