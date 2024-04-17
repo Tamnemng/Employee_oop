@@ -45,7 +45,9 @@ public:
     }
 
     friend std::istream& operator>>(std::istream& in, Date& date) {
-        in >> date.day >> date.month >> date.year;
+        int day, month, year;
+        in >> day >> month >> year;
+        date = Date(day, month, year);
         return in;
     }
 
@@ -78,7 +80,7 @@ public:
     Employee() {
         this->_name = "John Doe";
         this->_hire_date = Date(1, 1, 2020);
-        this->_role = "Software Engineer";
+        this->_role = "Retail Worker";
         this->_salary = 1000;
     }
 
@@ -120,7 +122,7 @@ public:
         out << "Name: " << employee._name << "\n";
         out << "Hire date: " << employee._hire_date << "\n";
         out << "Role: " << employee._role << "\n";
-        out << "Salary: " << employee._salary;
+        out << "Salary: " << employee._salary << "k";
         return out;
     }
 
@@ -197,7 +199,6 @@ public:
 
 class FullTimeEmployee : public Employee {
 private:
-    std::string _full_time_role;
     Date _salary_date;
     int _bonus = 0;
 
@@ -207,27 +208,16 @@ public:
         Date hire_date,
         std::string role,
         int salary,
-        std::string full_time_role,
         Date salary_date
     ) : Employee(name, hire_date, role, salary) {
-        this->_full_time_role = full_time_role;
         this->_salary_date = salary_date;
     }
 
     FullTimeEmployee() {
-        this->_full_time_role = "Employer";
         this->_salary_date = Date(1, 1, 2021);
     }
 
     ~FullTimeEmployee() = default;
-
-    void set_full_time_role(std::string full_time_role) {
-        this->_full_time_role = full_time_role;
-    }
-
-    std::string get_full_time_role() const {
-        return this->_full_time_role;
-    }
 
     int get_bonus() {
         if (this->_salary_date.year - this->get_hire_date().year >= 10) {
@@ -244,11 +234,11 @@ public:
 
     int get_salary() {
         float multiplier = 1;
-        if (this->_full_time_role == "Employer") {
+        if (this->get_role() == "Employer") {
             multiplier = 1.2;
-        } else if (this->_full_time_role == "Store Manager") {
+        } else if (this->get_role() == "Store Manager") {
             multiplier = 1.5;
-        } else if (this->_full_time_role == "Director") {
+        } else if (this->get_role() == "Director") {
             multiplier = 2;
         }
         return int(float(Employee::get_salary()) * multiplier) + this->get_bonus();
@@ -259,7 +249,6 @@ public:
         out << "Hire date: " << employee.get_hire_date() << "\n";
         out << "Role: " << employee.get_role() << "\n";
         out << "Salary: " << employee.get_salary() << "k\n";
-        out << "Full time role: " << employee.get_full_time_role() << "\n";
         out << "Bonus: " << employee._bonus << "\n";
         out << "Salary date: " << employee.get_salary_date();
         return out;
@@ -268,9 +257,7 @@ public:
     void input() override {
         Employee::input();
         std::string line;
-        std::getline(std::cin, line);
         std::istringstream iss(line);
-        std::getline(iss, this->_full_time_role);
         std::getline(std::cin, line);
         iss = std::istringstream(line);
         iss >> this->_salary_date;
